@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "../assets/style.scss";
 import CocktailCard from "../components/CocktailCard";
 import CocktailFinder from "../components/CocktailFinder";
@@ -7,25 +7,42 @@ const cocktailDbUrl =
 
 function Home() {
   const [cocktails, setCocktails] = useState([]);
-  const fetchDrinks = async () => {
-    try {
-      const response = await fetch(cocktailDbUrl);
-      const data = await response.json();
-      console.log(data.drinks);
-      setCocktails(data.drinks);
-    } catch (error) {
-      console.log(`error`);
-    }
-  };
+  const [searchTerm, setSearchTerm] = useState("");
+  const searchValue = useRef("");
+
   useEffect(() => {
+    const fetchDrinks = async () => {
+      try {
+        const response = await fetch(`${cocktailDbUrl}${searchTerm}`);
+        const data = await response.json();
+        console.log(data.drinks);
+        setCocktails(data.drinks);
+      } catch (error) {
+        console.log(`error`);
+      }
+    };
     fetchDrinks();
-  }, []);
-  console.log(cocktails);
+  }, [searchTerm]);
+  function searchCocktail() {
+    setSearchTerm(searchValue.current.value);
+    console.log(searchValue.current.value);
+    console.log(searchTerm);
+  }
 
   return (
     <>
       <div className="cocktail-homepage-wrapper">
-        <CocktailFinder className="cocktail-input" />
+        <section className="cocktail-input">
+          <form action="" className="search-form">
+            <label htmlFor="name">Search for a cocktail !</label>
+            <input
+              type="text"
+              id="name"
+              ref={searchValue}
+              onChange={searchCocktail}
+            />
+          </form>
+        </section>
         <div className="cocktail-items">
           {cocktails.map((cocktail, index) => (
             <CocktailCard
@@ -37,7 +54,6 @@ function Home() {
               id={cocktail.idDrink}
             />
           ))}
-          ;
         </div>
       </div>
     </>

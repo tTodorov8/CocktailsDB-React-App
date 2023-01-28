@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
-import cocktailLogo from "../cocktail-db-logo.svg";
+import cocktailLogo from "../assets/images/cocktail-db-logo.svg";
 function Layout() {
   return (
     <>
